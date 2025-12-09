@@ -26,6 +26,12 @@ Extract, group, and copy every useful link on a page with filtering, domain togg
 - Click a domain header to toggle domain-only view.
 - Use **Toggle Dark** to switch themes.
 
+## Settings and default searches
+- Open **Settings** from the popup or via the extension’s Options page to store per-site default searches.
+- Add a site (e.g. `example.com` or `news.example.com`) and the filter you always use (`mp4+1080p`, `/regex/`, etc.).
+- When you open the popup on a matching site and the filter is empty, the default search is applied automatically. Everything stays on-device in `browser.storage.local`.
+- Theme preference (light/dark) is stored locally and shared between the popup and Settings page, with dark as the default.
+
 ## How it works
 - `js/contentscript.js` collects anchors and common media/embed `src`-like attributes, normalizes them to absolute URLs, and responds to messages for:
   - `getLinks` → returns all collected links

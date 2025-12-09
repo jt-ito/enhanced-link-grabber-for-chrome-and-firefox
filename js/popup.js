@@ -2,20 +2,43 @@
 let darkMode = true;
 let selectedDomain = null; // in-memory only, resets when popup closes
 let latestLinks = [];
+const STORAGE_KEY = "defaultQueries";
+const THEME_KEY = "lgTheme";
 
 function applyDarkMode() {
-  document.body.style.backgroundColor = darkMode ? "#1e1e1e" : "white";
-  document.body.style.color = darkMode ? "white" : "black";
+  const bg = darkMode ? "#1e1e1e" : "#ffffff";
+  const fg = darkMode ? "#f5f5f5" : "#111111";
+  const card = darkMode ? "#2a2a2a" : "#ffffff";
+  document.body.style.backgroundColor = bg;
+  document.body.style.color = fg;
+  document.body.style.transition = "background 0.2s ease, color 0.2s ease";
   const inputs = document.querySelectorAll("input, button");
   inputs.forEach(el => {
-    el.style.backgroundColor = darkMode ? "#575757" : "";
-    el.style.color = darkMode ? "white" : "";
+    el.style.backgroundColor = darkMode ? card : "";
+    el.style.color = fg;
+    el.style.borderColor = darkMode ? "#4a4a4a" : "#cccccc";
   });
+}
+
+async function loadTheme() {
+  try {
+    const stored = await browser.storage.local.get(THEME_KEY);
+    if (stored && stored[THEME_KEY]) {
+      darkMode = stored[THEME_KEY] === "dark";
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function saveTheme() {
+  browser.storage.local.set({ [THEME_KEY]: darkMode ? "dark" : "light" }).catch(() => {});
 }
 
 function toggleDarkMode() {
   darkMode = !darkMode;
   applyDarkMode();
+  saveTheme();
 }
 
 function escapeHtml(text) {
@@ -58,6 +81,44 @@ function showMessage(msg, type = "info") {
   msgDiv.textContent = msg;
   msgDiv.style.display = "block";
   setTimeout(() => { msgDiv.style.display = "none"; }, 1800);
+}
+
+function pickDefaultQuery(host, entries) {
+  if (!host || !Array.isArray(entries)) return null;
+  const lowerHost = host.toLowerCase();
+  let best = null;
+  entries.forEach(entry => {
+    if (!entry || !entry.site || !entry.query) return;
+    const site = entry.site.toLowerCase();
+    if (!site) return;
+    const match = lowerHost === site || lowerHost.endsWith(`.${site}`);
+    if (match) {
+      if (!best || site.length > best.site.length) {
+        best = { site, query: entry.query };
+      }
+    }
+  });
+  return best;
+}
+
+async function applyDefaultFilterIfEmpty() {
+  const filterInput = document.getElementById("filter");
+  if (filterInput.value.trim()) return;
+  try {
+    const tabs = await browser.tabs.query({ active: true, currentWindow: true });
+    const tab = tabs[0];
+    if (!tab || !tab.url) return;
+    const host = new URL(tab.url).hostname;
+    const stored = await browser.storage.local.get(STORAGE_KEY);
+    const entries = Array.isArray(stored[STORAGE_KEY]) ? stored[STORAGE_KEY] : [];
+    const match = pickDefaultQuery(host, entries);
+    if (match && match.query) {
+      filterInput.value = match.query;
+      showMessage(`Applied default for ${match.site}`);
+    }
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 function renderLinks(links, filterValue) {
@@ -234,5 +295,15 @@ document.getElementById("copyAll").addEventListener("click", () => {
 });
 
 document.getElementById("toggleDark").addEventListener("click", toggleDarkMode);
-applyDarkMode();
-filterLinks();
+document.getElementById("openSettings").addEventListener("click", () => {
+  browser.runtime.openOptionsPage();
+});
+
+async function initPopup() {
+  await loadTheme();
+  applyDarkMode();
+  await applyDefaultFilterIfEmpty();
+  filterLinks();
+}
+
+initPopup();
