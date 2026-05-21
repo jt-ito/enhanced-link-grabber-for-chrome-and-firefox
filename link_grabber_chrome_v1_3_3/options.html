@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Link Grabber Settings</title>
+  <style>
+    :root {
+      --bg: #ffffff;
+      --card: #ffffff;
+      --fg: #111111;
+      --muted: #555555;
+      --border: #cccccc;
+      --accent: #2563eb;
+      --accent-strong: #1d4ed8;
+      --shadow: 0 6px 18px rgba(0,0,0,0.08);
+    }
+
+    body[data-theme="dark"] {
+      --bg: #1e1e1e;
+      --card: #2a2a2a;
+      --fg: #f5f5f5;
+      --muted: #c0c0c0;
+      --border: #4a4a4a;
+      --accent: #4da3ff;
+      --accent-strong: #3587e4;
+      --shadow: 0 10px 28px rgba(0,0,0,0.35);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: var(--bg);
+      color: var(--fg);
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+    h1 { margin: 0 0 6px 0; font-weight: 700; }
+    h2 { margin: 20px 0 12px 0; }
+    .note { color: var(--muted); margin-bottom: 14px; font-size: 14px; }
+    .layout { max-width: 720px; margin: 0 auto; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+    .header-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .field-row { display: flex; gap: 10px; margin-bottom: 12px; align-items: center; }
+    .field-row label { min-width: 90px; font-weight: 600; color: var(--muted); }
+    input[type="text"] {
+      flex: 1;
+      padding: 9px 11px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--fg);
+    }
+    input[type="text"]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+    button {
+      padding: 9px 13px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    button:hover { background: var(--accent-strong); transform: translateY(-1px); }
+    button.secondary {
+      background: transparent;
+      color: var(--fg);
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+    .entries { margin-top: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .entry { display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--card); box-shadow: var(--shadow); }
+    .entry .text { font-family: "JetBrains Mono", "Fira Code", Consolas, monospace; font-size: 13px; line-height: 1.4; color: var(--fg); }
+    .entry .text .site { font-weight: 700; }
+    .status { margin-top: 10px; font-size: 13px; color: #0f5132; min-height: 18px; }
+    body[data-theme="dark"] .status { color: #8ae0ff; }
+    .empty { color: var(--muted); font-size: 14px; padding: 6px 0; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <div class="header-row">
+      <div>
+        <h1>Settings</h1>
+        <div class="note">Default searches stay on your device. Permissions remain: activeTab, tabs, storage, clipboardWrite.</div>
+      </div>
+      <button id="themeToggle" class="secondary" title="Toggle theme">Toggle theme</button>
+    </div>
+    <div class="card">
+      <div class="field-row">
+        <label for="site">Site</label>
+        <input id="site" type="text" placeholder="example.com or sub.example.com">
+      </div>
+      <div class="field-row">
+        <label for="query">Default search</label>
+        <input id="query" type="text" placeholder="e.g. mp4+1080p or /regex/">
+      </div>
+      <button id="add">Save / Update</button>
+      <div id="status" class="status" aria-live="polite"></div>
+      <h2>Saved defaults</h2>
+      <div id="entries" class="entries"></div>
+    </div>
+  </div>
+  <script src="js/options.js"></script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    html, body {
+      min-height: 300px !important;
+      height: auto !important;
+      max-height: 600px;
+      overflow-y: auto;
+      width: 800px !important;
+      min-width: 800px !important;
+      max-width: 800px !important;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 10px;
+    }
+    .input-wrapper {
+      position: relative;
+      width: 100%;
+    }
+    #filter {
+      width: 100%;
+      padding: 5px 36px 5px 5px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    
+    #clear-filter {
+      pointer-events: auto;
+      background: transparent !important;
+      box-shadow: none !important;
+      outline: none !important;
+      border: none;
+      color: inherit;
+      font-size: 14px;
+      top: 1px;
+      right: 10px;
+
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      color: inherit;
+      padding: 0;
+    }
+    button {
+      padding: 6px 12px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .domain-group {
+      margin-bottom: 12px;
+    }
+    .domain-title {
+      font-weight: bold;
+      margin-bottom: 4px;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .domain-title.active {
+      color: #4da3ff;
+      text-decoration: underline;
+    }
+    .link-item {
+      display: block;
+      margin: 6px 0;
+      cursor: pointer;
+    }
+  
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px #888;
+    }
+    </style>
+    
+</head>
+<body>
+  <div class="input-wrapper">
+    <input type="text" id="filter" placeholder="Filter, /regex/, or 1080p+60fps">
+    <button id="clear-filter" title="Clear filter">&times;</button>
+  </div>
+  <button id="copyAll">Copy All</button>
+  <button id="toggleDark">Toggle Dark</button>
+  <button id="openSettings">Settings</button>
+  <div id="links"></div>
+  <script src="js/popup.js"></script>
+</body>
+</html>
